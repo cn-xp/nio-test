@@ -7,6 +7,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.time.LocalTime;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -67,10 +68,11 @@ public class NioServerApplication {
                     // 添加写事件
                     selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE);
                     // 回复客户端
-                    String result = "服务端已经收到消息了，谢谢！";
+                    String result = "服务端收到消息了！";
                     readWriteBuffer.writeBuffer.put(result.getBytes());
                     //读取不到数据就把channel关闭
                     if(read == -1) {
+                        System.out.println("连接关闭" + LocalTime.now().toString());
                         channel.close();
                     }
                 }
@@ -83,11 +85,9 @@ public class NioServerApplication {
                     readWriteBuffer.writeBuffer.flip();
                     if(readWriteBuffer.writeBuffer.hasRemaining()) {
                         channel.write(readWriteBuffer.writeBuffer);
-                        System.out.println("写入数据成功给客户端");
                     } else {
                         // 注销写事件
                         selectionKey.interestOps(selectionKey.interestOps() & ~SelectionKey.OP_WRITE);
-                        System.out.println("注销写事件");
                     }
                     // 将buffer中没有用到的数据进行迁移
                     readWriteBuffer.writeBuffer.compact();

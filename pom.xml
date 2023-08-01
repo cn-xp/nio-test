@@ -12,6 +12,8 @@
     <modules>
         <module>nio-server</module>
         <module>nio-client</module>
+        <module>file-channel</module>
+        <module>file-channel-client</module>
     </modules>
 
     <properties>
